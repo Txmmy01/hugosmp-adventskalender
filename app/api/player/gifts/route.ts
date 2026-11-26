@@ -71,7 +71,7 @@ export async function POST(request: Request) {
 
   await prisma.doorOpening.upsert({
     where: { playerId_giftId: { playerId: session.playerId, giftId: gift.id } },
-    create: { playerId: session.playerId, giftId: gift.id },
+    create: { playerId: session.playerId, giftId: gift.id, openedTitle: gift.title, openedReward: gift.reward },
     update: {}
   });
 
