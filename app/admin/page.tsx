@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
+import Link from "next/link";
 import { Gift, KeyRound, LogOut, ShieldCheck, Users } from "lucide-react";
 
 type Player = {
@@ -212,7 +213,7 @@ export default function AdminPage() {
           />
           {error && <div className="admin-error">{error}</div>}
           <button className="admin-primary" type="submit"><KeyRound size={16} /> Anmelden</button>
-          <a className="admin-back" href="/">Zurück zum Adventskalender</a>
+          <Link className="admin-back" href="/">Zurück zum Adventskalender</Link>
         </form>
       </main>
     );
