@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Gift, KeyRound, LogOut, ShieldCheck, Users } from "lucide-react";
 
 type Player = {
@@ -59,7 +59,7 @@ export default function AdminPage() {
       .finally(() => setChecking(false));
   }, []);
 
-  async function login(event: React.FormEvent<HTMLFormElement>) {
+  async function login(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
 
@@ -86,7 +86,7 @@ export default function AdminPage() {
     setGifts([]);
   }
 
-  async function addPlayer(event: React.FormEvent<HTMLFormElement>) {
+  async function addPlayer(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSaving(true);
     setError("");
@@ -266,7 +266,7 @@ function GiftEditor({
     setIsPublished(gift?.isPublished ?? false);
   }, [gift]);
 
-  async function submit(event: React.FormEvent<HTMLFormElement>) {
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     await onSave({
       id: gift?.id ?? "",
