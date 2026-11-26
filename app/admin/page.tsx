@@ -10,7 +10,7 @@ type Player = {
   isActive: boolean;
 };
 
-type GiftEntry = {
+type OpeningEntry = {\n  id: string;\n  minecraftName: string;\n  day: number;\n  title: string;\n  reward: string;\n  openedAt: string;\n};\n\ntype GiftEntry = {
   id: string;
   day: number;
   title: string;
@@ -26,11 +26,11 @@ export default function AdminPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [players, setPlayers] = useState<Player[]>([]);
-  const [gifts, setGifts] = useState<GiftEntry[]>([]);
+  const [gifts, setGifts] = useState<GiftEntry[]>([]);\n  const [openings, setOpenings] = useState<OpeningEntry[]>([]);
   const [minecraftName, setMinecraftName] = useState("");
   const [newPlayerPassword, setNewPlayerPassword] = useState("");
   const [playerPasswords, setPlayerPasswords] = useState<Record<string, string>>({});
-  const [activeTab, setActiveTab] = useState<"players" | "gifts">("players");
+  const [activeTab, setActiveTab] = useState<"players" | "gifts" | "received">("players");
   const [saving, setSaving] = useState(false);
 
   async function loadData() {
@@ -184,7 +184,7 @@ export default function AdminPage() {
 
         <nav className="admin-tabs">
           <button className={activeTab === "players" ? "active" : ""} onClick={() => setActiveTab("players")}><Users size={16} /> Spieler</button>
-          <button className={activeTab === "gifts" ? "active" : ""} onClick={() => setActiveTab("gifts")}><Gift size={16} /> Geschenke</button>
+          <button className={activeTab === "gifts" ? "active" : ""} onClick={() => setActiveTab("gifts")}><Gift size={16} /> Geschenke</button>\n          <button className={activeTab === "received" ? "active" : ""} onClick={() => setActiveTab("received")}><ShieldCheck size={16} /> Erhalten</button>
         </nav>
 
         {error && <div className="admin-error">{error}</div>}
@@ -221,6 +221,26 @@ export default function AdminPage() {
                 </div>
               ))}
               {players.length === 0 && <p className="admin-empty">Noch keine Spieler hinzugefügt.</p>}
+            </div>
+          </section>
+        )}
+
+        {activeTab === "received" && (
+          <section className="admin-panel">
+            <div className="admin-section-heading">
+              <div><h2>Wer hat was erhalten?</h2><p>Jede erfolgreiche Türchenöffnung wird hier mit Spieler und Uhrzeit protokolliert.</p></div>
+              <span className="admin-count">{openings.length} Öffnungen</span>
+            </div>
+            <div className="admin-player-list">
+              {openings.map(opening => (
+                <div className="admin-player-row" key={opening.id}>
+                  <div className="admin-avatar">{opening.minecraftName.slice(0, 1).toUpperCase()}</div>
+                  <div className="admin-player-name"><strong>{opening.minecraftName}</strong><span>Türchen {String(opening.day).padStart(2, "0")} · {opening.title}</span></div>
+                  <span className="admin-status approved">{opening.reward}</span>
+                  <span className="admin-count">{new Date(opening.openedAt).toLocaleString("de-DE")}</span>
+                </div>
+              ))}
+              {openings.length === 0 && <p className="admin-empty">Noch hat niemand ein Geschenk geöffnet.</p>}
             </div>
           </section>
         )}
