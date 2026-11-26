@@ -45,26 +45,32 @@ export default function AdminPage() {
 
   async function loadData() {
     const [playerResponse, giftResponse, openingResponse] = await Promise.all([
-      fetch("/api/admin/players"),
-      fetch("/api/admin/gifts"),
-      fetch("/api/admin/openings")
+      fetch("/api/admin/players", { cache: "no-store" }),
+      fetch("/api/admin/gifts", { cache: "no-store" }),
+      fetch("/api/admin/openings", { cache: "no-store" })
     ]);
 
-    if (playerResponse.ok) {
-      setPlayers(await playerResponse.json());
+    if ([playerResponse, giftResponse, openingResponse].some(response => response.status === 401)) {
+      setAuthenticated(false);
+      throw new Error("Deine Admin-Sitzung ist abgelaufen. Bitte melde dich erneut an.");
     }
 
-    if (giftResponse.ok) {
-      setGifts(await giftResponse.json());
+    if (!playerResponse.ok || !giftResponse.ok || !openingResponse.ok) {
+      throw new Error("Die Verwaltungsdaten konnten nicht vollständig geladen werden.");
     }
 
-    if (openingResponse.ok) {
-      setOpenings(await openingResponse.json());
-    }
+    const [playerData, giftData, openingData] = await Promise.all([
+      playerResponse.json(),
+      giftResponse.json(),
+      openingResponse.json()
+    ]);
+    setPlayers(playerData);
+    setGifts(giftData);
+    setOpenings(openingData);
   }
 
   useEffect(() => {
-    fetch("/api/admin/session")
+    fetch("/api/admin/session", { cache: "no-store" })
       .then(response => response.json())
       .then(async data => {
         setAuthenticated(data.authenticated);
@@ -72,6 +78,7 @@ export default function AdminPage() {
           await loadData();
         }
       })
+      .catch(() => setError("Verbindung zum Server fehlgeschlagen."))
       .finally(() => setChecking(false));
   }, []);
 
@@ -92,14 +99,19 @@ export default function AdminPage() {
 
     setAuthenticated(true);
     setPassword("");
-    await loadData();
+    try {
+      await loadData();
+    } catch (loadError) {
+      setError(loadError instanceof Error ? loadError.message : "Daten konnten nicht geladen werden.");
+    }
   }
 
   async function logout() {
-    await fetch("/api/admin/logout", { method: "POST" });
+    await fetch("/api/admin/logout", { method: "POST" }).catch(() => undefined);
     setAuthenticated(false);
     setPlayers([]);
     setGifts([]);
+    setOpenings([]);
   }
 
   async function addPlayer(event: FormEvent<HTMLFormElement>) {
@@ -148,12 +160,22 @@ export default function AdminPage() {
   }
 
   async function saveGift(gift: GiftEntry) {
-    await fetch("/api/admin/gifts", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(gift)
-    });
-    await loadData();
+    setError("");
+    try {
+      const response = await fetch("/api/admin/gifts", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(gift)
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        setError(data.error ?? "Geschenk konnte nicht gespeichert werden.");
+        return;
+      }
+      await loadData();
+    } catch {
+      setError("Geschenk konnte wegen eines Verbindungsfehlers nicht gespeichert werden.");
+    }
   }
 
   if (checking) {
@@ -306,12 +328,19 @@ function GiftEditor({
   );
   const [isPublished, setIsPublished] = useState(gift?.isPublished ?? false);
 
+  function toLocalDateTime(value: string) {
+    const date = new Date(value);
+    const offset = date.getTimezoneOffset() * 60000;
+    return new Date(date.getTime() - offset).toISOString().slice(0, 16);
+  }
+
   useEffect(() => {
     setTitle(gift?.title ?? "");
     setDescription(gift?.description ?? "");
     setReward(gift?.reward ?? "");
+    setAvailableAt(gift?.availableAt ? toLocalDateTime(gift.availableAt) : `2026-12-${String(day).padStart(2, "0")}T00:00`);
     setIsPublished(gift?.isPublished ?? false);
-  }, [gift]);
+  }, [gift, day]);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
