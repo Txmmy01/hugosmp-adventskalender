@@ -19,8 +19,8 @@ export async function GET() {
     id: opening.id,
     minecraftName: opening.player.minecraftName,
     day: opening.gift.day,
-    title: opening.gift.title,
-    reward: opening.gift.reward,
+    title: opening.openedTitle ?? opening.gift.title,
+    reward: opening.openedReward ?? opening.gift.reward,
     openedAt: opening.openedAt
   })));
 }
