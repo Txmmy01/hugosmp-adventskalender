@@ -72,14 +72,25 @@ export async function PATCH(request: Request) {
   const body = await request.json().catch(() => null);
   const id = typeof body?.id === "string" ? body.id : "";
   const isApproved = typeof body?.isApproved === "boolean" ? body.isApproved : null;
+  const isActive = typeof body?.isActive === "boolean" ? body.isActive : null;
+  const password = typeof body?.password === "string" ? body.password : null;
 
-  if (!id || isApproved === null) {
+  if (!id || (isApproved === null && isActive === null && password === null)) {
     return NextResponse.json({ error: "Ungültige Spielerdaten." }, { status: 400 });
   }
 
+  if (password !== null && (password.length < 10 || password.length > 200)) {
+    return NextResponse.json({ error: "Das Passwort muss mindestens 10 Zeichen lang sein." }, { status: 400 });
+  }
+
+  const data: { isApproved?: boolean; isActive?: boolean; passwordHash?: string } = {};
+  if (isApproved !== null) data.isApproved = isApproved;
+  if (isActive !== null) data.isActive = isActive;
+  if (password !== null) data.passwordHash = await hash(password, 12);
+
   const player = await prisma.player.update({
     where: { id },
-    data: { isApproved },
+    data,
     select: {
       id: true,
       minecraftName: true,
