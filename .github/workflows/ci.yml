@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: file:./ci.db
+      SESSION_SECRET: ci-only-session-secret-that-is-long-enough-32
+      ADMIN_PASSWORD_HASH: "$2b$12$C6UzMDM.H6dfI/f/IKcEe.8R6sQ7mX2j8x2Y2Q0l5F7u0j0e3p3e"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm install
+      - run: npx prisma generate
+      - run: npx prisma validate
+      - run: npx tsc --noEmit
+      - run: npm run build
