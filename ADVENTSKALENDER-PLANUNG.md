@@ -22,27 +22,27 @@
 
 11: 500k
 
-12:
+12: 150k
 
-13:
+13: 1x Shulker mit Essen
 
-14:
+14: 250k
 
-15:
+15: 1x Shulker mit Baumaterial
 
-16:
+16: 1x Enchanted Golden Apple
 
-17:
+17: 350k
 
-18:
+18: Mystery Box Thema Farmen
 
 19: Mystery Box Thema Untergrund 
 
 20: Mystery Box Thema Nether
 
-21: 
+21: Mystery Box Thema PvP
 
-22:
+22: 500k
 
 23: 2m
 
