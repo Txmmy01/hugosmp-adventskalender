@@ -1,12 +1,6 @@
-node_modules
-.next
-out
-build
-dist
+node_modules/
 .env
-.env.*
-!.env.example
-*.db
-*.db-journal
-coverage
-.DS_Store
+advent.sqlite
+advent.sqlite-shm
+advent.sqlite-wal
+*.log

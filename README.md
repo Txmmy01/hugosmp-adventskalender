@@ -1,69 +1,56 @@
-# HugoSMP Adventskalender
+# 🎄 Weihnachts-Adventskalender-Bot
 
-Weihnachtlicher Adventskalender für die HugoSMP-Community.
+Ein Discord-Bot für eine Weihnachtsaktion innerhalb eines Minecraft-Clans. Der Weihnachtsgedanke steht im Mittelpunkt.
 
 ## Voraussetzungen
 
-- Node.js 20.9 oder neuer
-- npm
+- Node.js 20 oder neuer
+- Ein Discord-Bot im [Discord Developer Portal](https://discord.com/developers/applications)
+- Bot mit den Scopes `bot` und `applications.commands`
+- Bot-Berechtigungen: Nachrichten senden, Embeds senden und Nachrichtenverlauf lesen
 
 ## Installation
 
-```bash
-npm install
-cp .env.example .env
-npx prisma generate
-npx prisma migrate dev
-npm run dev
-```
+1. Repository herunterladen.
+2. Im Projektordner `npm install` ausführen.
+3. Eine Datei `.env` anlegen:
+   ```env
+   DISCORD_TOKEN=DEIN_BOT_TOKEN
+   DISCORD_APPLICATION_ID=DEINE_APPLICATION_ID
+   DISCORD_GUILD_ID=DEINE_SERVER_ID
+   ```
+4. In `config.yml` die Server-ID unter `discord.guildId` und die Admin-Rollen unter `discord.adminRoleIds` eintragen.
+5. Mit `npm start` starten.
 
-Die Anwendung läuft anschließend unter http://localhost:3000.
+Das Bot-Token gehört ausschließlich in `.env`, niemals in `config.yml` oder GitHub.
 
-## Admin-Zugang
+## Erste Einrichtung
 
-Erzeuge einen sicheren Passwort-Hash:
+- `/advent-setup`: veröffentlicht den Kalender im aktuellen Kanal.
+- `/advent-register`: Spieler verknüpfen ihren Minecraft-Namen.
+- `/advent`: Kalender privat anzeigen.
+- `/advent-status`: eigene Öffnungen und Übergabestatus anzeigen.
+- `/advent-admin`: offene Belohnungen verwalten.
 
-```bash
-node scripts/hash-password.mjs
-```
+Administratoren benötigen entweder die Discord-Berechtigung Administrator oder eine Rolle aus `discord.adminRoleIds`.
 
-Trage den ausgegebenen Wert als `ADMIN_PASSWORD_HASH` in deine lokale `.env`-Datei ein. Setze außerdem einen zufälligen `SESSION_SECRET` mit mindestens 32 Zeichen. Zugangsdaten gehören niemals ins Repository.
+## Ablauf
 
-Das Admin-Panel erreichst du unter http://localhost:3000/admin.
+Der Kalender startet standardmäßig am 1. Dezember 2026 um 00:00 Uhr in der Zeitzone Europe/Berlin. Die tägliche Ankündigung erfolgt um 09:00 Uhr. Beides kann in `config.yml` geändert werden.
 
-## Admin-Funktionen
+Jeder Spieler kann jedes Türchen nur einmal öffnen. Der Bot speichert die Belohnung beim Öffnen unveränderlich in SQLite. Die Ausgabe ist zunächst manuell: Ein Admin übergibt die Belohnung im Spiel und bestätigt danach die Übergabe über `/advent-admin`.
 
-- Minecraft-Spieler mit eigenem Webseiten-Passwort anlegen
-- Spieler einzeln freigeben, deaktivieren und wieder aktivieren
-- Spielerpasswörter einzeln neu setzen
-- Inhalte, Belohnungen und Freischaltzeit für 24 Türchen verwalten
+Die Datenbank `advent.sqlite` wird automatisch angelegt und enthält Registrierungen, Öffnungen und Übergaben. Sie sollte regelmäßig gesichert werden.
 
-Spieler werden nach dem Anlegen zunächst nicht freigegeben. Passwörter werden mit bcrypt gehasht und sind nicht im Klartext einsehbar.
+## Hinweise zum Betrieb
 
-## Spielerbereich
+Der Bot muss dauerhaft laufen, damit Buttons und tägliche Ankündigungen funktionieren. Ein Neustart ist unproblematisch: Daten und Kalendernachricht werden aus SQLite wiederhergestellt. Falls die Kalendernachricht gelöscht wurde, einfach erneut `/advent-setup` ausführen.
 
-- Anmeldung mit Minecraft-Namen und dem vom Admin gesetzten Webseiten-Passwort
-- Nur freigegebene und aktive Spieler erhalten eine Sitzung
-- Der Kalender zeigt 24 nummerierte Geschenke
-- Veröffentlichte Geschenke werden erst ab ihrer Freischaltzeit serverseitig geöffnet
-- Geöffnete Türchen und Belohnungen werden pro Spieler gespeichert
-- Ungeöffnete Geschenke verraten weder Titel noch Beschreibung
-- Bei jeder Öffnung werden Titel und Belohnung als unveränderlicher Verlauf gespeichert
+Die Belohnungen und Texte werden ausschließlich in `config.yml` gepflegt. Nach Änderungen den Bot neu starten.
 
-Der Kalender ist unter http://localhost:3000/calendar erreichbar.
+## Sicherheit
 
-## Datenbank und Deployment
-
-Das Repository enthält eine initiale SQLite-Migration. Lokal wird sie mit `npx prisma migrate dev` angewendet. In einer Produktionsumgebung werden bereits eingecheckte Migrationen mit `npx prisma migrate deploy` angewendet.
-
-Die lokale Entwicklung verwendet SQLite. Für öffentliches Serverless-Hosting ist eine dauerhaft gespeicherte PostgreSQL-Datenbank zu verwenden; dafür müssen Prisma-Datasource und `DATABASE_URL` auf PostgreSQL umgestellt und eine passende PostgreSQL-Migration erzeugt werden. Eine lokale SQLite-Datei ist nicht als persistente Produktionsdatenbank für Serverless-Hosting geeignet.
-
-Vor dem Deployment müssen `DATABASE_URL`, `SESSION_SECRET` (mindestens 32 Zeichen) und `ADMIN_PASSWORD_HASH` als geheime Umgebungsvariablen gesetzt sein. `npm run build` und `npx tsc --noEmit` müssen erfolgreich durchlaufen.
-
-## Projektstatus
-
-Login, Spielersitzungen, Admin-Spielerverwaltung, individuelle Passwortänderungen, Geschenkverwaltung und die serverseitige Freischaltprüfung sind implementiert. Vor dem Livegang müssen Build, Datenbankmigration und Deployment-Konfiguration getestet werden.
-
-## KVM-Server-Installation
-
-Die ausführliche Anleitung für den produktiven Betrieb auf einem eigenen KVM-Server mit Ubuntu Server 24.04 LTS, Node.js 22, SQLite, PM2, Nginx, HTTPS und Backups findest du in [KVM-INSTALLATION.md](./KVM-INSTALLATION.md).
+- Bot-Token niemals teilen oder committen.
+- Admin-Rollen sparsam vergeben.
+- Die SQLite-Datei nicht öffentlich hochladen.
+- Keine RCON-Zugangsdaten eintragen: Der Bot führt keine automatischen Minecraft-Befehle aus.

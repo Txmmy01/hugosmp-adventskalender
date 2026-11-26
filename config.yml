@@ -1,0 +1,89 @@
+discord:
+  guildId: ""
+  channelId: ""
+  adminRoleIds: []
+
+calendar:
+  startDate: "2026-12-01"
+  timezone: "Europe/Berlin"
+  announcementEnabled: true
+  announcementTime: "09:00"
+  days:
+    - day: 1
+      title: "Weihnachtsgeld"
+      reward: "250.000 $"
+    - day: 2
+      title: "Goldene Äpfel"
+      reward: "1 Shulker mit goldenen Äpfeln"
+    - day: 3
+      title: "Weihnachtsgeld"
+      reward: "250.000 $"
+    - day: 4
+      title: "Enderperlen"
+      reward: "1 Shulker mit Enderperlen"
+    - day: 5
+      title: "Weihnachtsgeld"
+      reward: "250.000 $"
+    - day: 6
+      title: "Verzauberter goldener Apfel"
+      reward: "1 Enchanted Golden Apple"
+    - day: 7
+      title: "Weihnachtsgeld"
+      reward: "100.000 $"
+    - day: 8
+      title: "Diamantrüstung"
+      reward: "1 vollständiges verzaubertes Diamant-Set"
+    - day: 9
+      title: "Weihnachtsgeld"
+      reward: "100.000 $"
+    - day: 10
+      title: "Totems"
+      reward: "1 Shulker mit Totems"
+    - day: 11
+      title: "Weihnachtsgeld"
+      reward: "500.000 $"
+    - day: 12
+      title: "Weihnachtsgeld"
+      reward: "150.000 $"
+    - day: 13
+      title: "Weihnachtliche Verpflegung"
+      reward: "1 Shulker mit Essen"
+    - day: 14
+      title: "Weihnachtsgeld"
+      reward: "250.000 $"
+    - day: 15
+      title: "Baumaterial"
+      reward: "1 Shulker mit Baumaterial"
+    - day: 16
+      title: "Verzauberter goldener Apfel"
+      reward: "1 Enchanted Golden Apple"
+    - day: 17
+      title: "Weihnachtsgeld"
+      reward: "350.000 $"
+    - day: 18
+      title: "Mystery Box: Farmen"
+      reward: "1 Mystery Box zum Thema Farmen"
+    - day: 19
+      title: "Mystery Box: Untergrund"
+      reward: "1 Mystery Box zum Thema Untergrund"
+    - day: 20
+      title: "Mystery Box: Nether"
+      reward: "1 Mystery Box zum Thema Nether"
+    - day: 21
+      title: "Mystery Box: PvP"
+      reward: "1 Mystery Box zum Thema PvP"
+    - day: 22
+      title: "Weihnachtsgeld"
+      reward: "500.000 $"
+    - day: 23
+      title: "Großer Weihnachtsbonus"
+      reward: "2.000.000 $"
+    - day: 24
+      title: "Weihnachtsüberraschung"
+      reward: "1 zufälliger Spawner"
+
+messages:
+  title: "🎄 Der große Weihnachts-Adventskalender"
+  description: "24 Türchen, 24 Überraschungen und jede Menge Weihnachtsstimmung!\n\nÖffne jeden Tag dein Türchen und entdecke deine Weihnachtsüberraschung. Frohe Weihnachten! 🎅"
+  footer: "Frohe Weihnachten 🎅"
+  color: 11674146

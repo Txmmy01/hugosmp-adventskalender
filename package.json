@@ -1,35 +1,19 @@
 {
-  "name": "hugosmp-adventskalender",
+  "name": "weihnachts-adventskalender-bot",
   "version": "1.0.0",
   "private": true,
+  "description": "Discord-Weihnachts-Adventskalender für einen Minecraft-Clan",
+  "main": "index.js",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint .",
-    "db:generate": "prisma generate",
-    "db:migrate": "prisma migrate dev"
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": ">=20"
   },
   "dependencies": {
-    "@prisma/client": "^6.19.0",
-    "@tailwindcss/postcss": "^4.1.17",
-    "bcryptjs": "^3.0.2",
-    "jose": "^6.1.0",
-    "lucide-react": "^0.468.0",
-    "next": "^15.5.6",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "tailwindcss": "^4.1.17",
-    "zod": "^4.1.12"
-  },
-  "devDependencies": {
-    "@types/bcryptjs": "^2.4.6",
-    "@types/node": "^22.19.1",
-    "@types/react": "^19.1.16",
-    "@types/react-dom": "^19.1.9",
-    "eslint": "^9.39.1",
-    "eslint-config-next": "^15.5.6",
-    "prisma": "^6.19.0",
-    "typescript": "^5.9.3"
+    "better-sqlite3": "^11.7.0",
+    "discord.js": "^14.19.3",
+    "dotenv": "^16.4.7",
+    "yaml": "^2.7.0"
   }
 }
