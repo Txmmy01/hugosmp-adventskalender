@@ -47,6 +47,8 @@ Spieler werden nach dem Anlegen zunächst nicht freigegeben. Passwörter werden 
 - Der Kalender zeigt 24 nummerierte Geschenke
 - Veröffentlichte Geschenke werden erst ab ihrer Freischaltzeit serverseitig geöffnet
 - Geöffnete Türchen und Belohnungen werden pro Spieler gespeichert
+- Ungeöffnete Geschenke verraten weder Titel noch Beschreibung
+- Bei jeder Öffnung werden Titel und Belohnung als unveränderlicher Verlauf gespeichert
 
 Der Kalender ist unter http://localhost:3000/calendar erreichbar.
 
