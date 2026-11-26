@@ -317,7 +317,7 @@ export default function AdminPage() {
             </div>
           </section>
         )}
-        <a className="admin-back" href="/">Zurück zum Adventskalender</a>
+        <Link className="admin-back" href="/">Zurück zum Adventskalender</Link>
       </div>
     </main>
   );
