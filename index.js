@@ -328,6 +328,8 @@ client.on("interactionCreate", interaction => {
   });
 });
 
+let lastCalendarDate = null;
+
 client.once("ready", async () => {
   console.log(`🎄 ${client.user.tag} ist bereit.`);
   try {
@@ -337,9 +339,15 @@ client.once("ready", async () => {
     console.error("Slash-Befehle konnten nicht registriert werden:", error);
   }
   await refreshCalendar();
+  lastCalendarDate = localDate();
   await sendDailyAnnouncement();
-  setInterval(() => {
-    sendDailyAnnouncement().catch(error => console.error("Ankündigungsfehler:", error));
+  setInterval(async () => {
+    const today = localDate();
+    if (today !== lastCalendarDate) {
+      lastCalendarDate = today;
+      await refreshCalendar();
+    }
+    await sendDailyAnnouncement();
   }, 30000);
 });
 
