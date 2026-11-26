@@ -63,3 +63,7 @@ Vor dem Deployment müssen `DATABASE_URL`, `SESSION_SECRET` (mindestens 32 Zeich
 ## Projektstatus
 
 Login, Spielersitzungen, Admin-Spielerverwaltung, individuelle Passwortänderungen, Geschenkverwaltung und die serverseitige Freischaltprüfung sind implementiert. Vor dem Livegang müssen Build, Datenbankmigration und Deployment-Konfiguration getestet werden.
+
+## KVM-Server-Installation
+
+Die ausführliche Anleitung für den produktiven Betrieb auf einem eigenen KVM-Server mit Ubuntu Server 24.04 LTS, Node.js 22, SQLite, PM2, Nginx, HTTPS und Backups findest du in [KVM-INSTALLATION.md](./KVM-INSTALLATION.md).
