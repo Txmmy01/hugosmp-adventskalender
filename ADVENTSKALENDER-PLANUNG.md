@@ -1,28 +1,26 @@
-# Adventskalender-Planung
+# Adventskalender-Planung 
 
-Hier kannst du deine Ideen für die 24 Türchen festhalten.
+1: 250k
 
-1:
+2: 1x Shulker mit Goldenen Äpfeln
 
-2:
+3: 250k
 
-3:
+4: 1x Shulker mit Enderperlen
 
-4:
+5: 250k
 
-5:
+6: 1x Enchanted Golden Apple
 
-6:
+7: 100k
 
-7:
+8: Full Enchanted Dia Set
 
-8:
+9: 100k
 
-9:
+10: 1x Shulker mit Totems
 
-10:
-
-11:
+11: 500k
 
 12:
 
@@ -46,6 +44,6 @@ Hier kannst du deine Ideen für die 24 Türchen festhalten.
 
 22:
 
-23:
+23: 2m
 
-24:
+24: 1x Random Spawner 
