@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { Gift, LogOut, Snowflake, TreePine, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -90,7 +90,7 @@ export default function CalendarPage() {
               const published = Boolean(gift);
               const color = colors[(day - 1) % colors.length];
               return (
-                <button className={`path-gift ${color} ${opened ? "opened" : ""} ${available && !opened ? "ready" : ""}`} key={day} style={{ "--gift-index": day } as React.CSSProperties} onClick={() => available && published && !opened && openGift(day)} disabled={!available || opened || !published || loadingDay === day} aria-label={`Türchen ${day}${opened ? ", geöffnet" : available ? ", öffnen" : ", verschlossen"}`}>
+                <button className={`path-gift ${color} ${opened ? "opened" : ""} ${available && !opened ? "ready" : ""}`} key={day} style={{ "--gift-index": day } as CSSProperties} onClick={() => available && published && !opened && openGift(day)} disabled={!available || opened || !published || loadingDay === day} aria-label={`Türchen ${day}${opened ? ", geöffnet" : available ? ", öffnen" : ", verschlossen"}`}>
                   <span className="gift-number">{day}</span><span className="gift-box"><i /><b /></span><span className="gift-state">{opened ? "Geöffnet" : available ? "Öffnen" : "Bald"}</span>
                 </button>
               );
