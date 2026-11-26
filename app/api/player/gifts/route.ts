@@ -69,7 +69,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Dieses Geschenk ist noch verschlossen." }, { status: 403 });
   }
 
-  await prisma.doorOpening.upsert({
+  const opening = await prisma.doorOpening.upsert({
     where: { playerId_giftId: { playerId: session.playerId, giftId: gift.id } },
     create: { playerId: session.playerId, giftId: gift.id, openedTitle: gift.title, openedReward: gift.reward },
     update: {}
@@ -77,8 +77,8 @@ export async function POST(request: Request) {
 
   return NextResponse.json({
     day: gift.day,
-    title: gift.title,
+    title: opening.openedTitle ?? gift.title,
     description: gift.description,
-    reward: gift.reward
+    reward: opening.openedReward ?? gift.reward
   });
 }
