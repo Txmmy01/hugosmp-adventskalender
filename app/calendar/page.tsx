@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useState, type CSSProperties } from "react";
 import { Gift, LogOut, Snowflake, TreePine, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -25,7 +25,7 @@ export default function CalendarPage() {
   const [error, setError] = useState("");
   const [loadingDay, setLoadingDay] = useState<number | null>(null);
 
-  async function load() {
+  const load = useCallback(async () => {
     try {
       const sessionResponse = await fetch("/api/player/session", { cache: "no-store" });
       const session = await sessionResponse.json();
@@ -44,9 +44,9 @@ export default function CalendarPage() {
     } catch {
       setError("Verbindung fehlgeschlagen. Bitte lade die Seite erneut.");
     }
-  }
+  }, [router]);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [load]);
 
   async function openGift(day: number) {
     setLoadingDay(day);
