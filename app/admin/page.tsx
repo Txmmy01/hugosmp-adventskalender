@@ -86,23 +86,21 @@ export default function AdminPage() {
     event.preventDefault();
     setError("");
 
-    const response = await fetch("/api/admin/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password })
-    });
-
-    if (!response.ok) {
-      setError("Das Passwort ist nicht korrekt.");
-      return;
-    }
-
-    setAuthenticated(true);
-    setPassword("");
     try {
+      const response = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password })
+      });
+      if (!response.ok) {
+        setError("Das Passwort ist nicht korrekt.");
+        return;
+      }
+      setAuthenticated(true);
+      setPassword("");
       await loadData();
     } catch (loadError) {
-      setError(loadError instanceof Error ? loadError.message : "Daten konnten nicht geladen werden.");
+      setError(loadError instanceof Error ? loadError.message : "Anmeldung fehlgeschlagen.");
     }
   }
 
@@ -119,44 +117,50 @@ export default function AdminPage() {
     setSaving(true);
     setError("");
 
-    const response = await fetch("/api/admin/players", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        minecraftName,
-        password: newPlayerPassword
-      })
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      setError(data.error ?? "Spieler konnte nicht angelegt werden.");
+    try {
+      const response = await fetch("/api/admin/players", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          minecraftName: minecraftName.trim(),
+          password: newPlayerPassword
+        })
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        setError(data.error ?? "Spieler konnte nicht angelegt werden.");
+        return;
+      }
+      setMinecraftName("");
+      setNewPlayerPassword("");
+      await loadData();
+    } catch {
+      setError("Spieler konnte wegen eines Verbindungsfehlers nicht angelegt werden.");
+    } finally {
       setSaving(false);
-      return;
     }
-
-    setMinecraftName("");
-    setNewPlayerPassword("");
-    await loadData();
-    setSaving(false);
   }
 
   async function updatePlayer(player: Player, values: { isApproved?: boolean; isActive?: boolean; password?: string }) {
-    const response = await fetch("/api/admin/players", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: player.id, ...values })
-    });
-    const data = await response.json();
-    if (!response.ok) {
-      setError(data.error ?? "Spieler konnte nicht aktualisiert werden.");
-      return;
+    setError("");
+    try {
+      const response = await fetch("/api/admin/players", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: player.id, ...values })
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        setError(data.error ?? "Spieler konnte nicht aktualisiert werden.");
+        return;
+      }
+      if (values.password) {
+        setPlayerPasswords(current => ({ ...current, [player.id]: "" }));
+      }
+      await loadData();
+    } catch {
+      setError("Spieler konnte wegen eines Verbindungsfehlers nicht aktualisiert werden.");
     }
-    if (values.password) {
-      setPlayerPasswords(current => ({ ...current, [player.id]: "" }));
-    }
-    await loadData();
   }
 
   async function saveGift(gift: GiftEntry) {
