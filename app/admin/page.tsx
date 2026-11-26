@@ -29,6 +29,13 @@ type GiftEntry = {
   isPublished: boolean;
 };
 
+function toLocalDateTime(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  const offset = date.getTimezoneOffset() * 60000;
+  return new Date(date.getTime() - offset).toISOString().slice(0, 16);
+}
+
 export default function AdminPage() {
   const [authenticated, setAuthenticated] = useState(false);
   const [checking, setChecking] = useState(true);
@@ -328,15 +335,10 @@ function GiftEditor({
   const [description, setDescription] = useState(gift?.description ?? "");
   const [reward, setReward] = useState(gift?.reward ?? "");
   const [availableAt, setAvailableAt] = useState(
-    gift?.availableAt ? new Date(gift.availableAt).toISOString().slice(0, 16) : `2026-12-${String(day).padStart(2, "0")}T00:00`
+    gift?.availableAt ? toLocalDateTime(gift.availableAt) : `2026-12-${String(day).padStart(2, "0")}T00:00`
   );
   const [isPublished, setIsPublished] = useState(gift?.isPublished ?? false);
 
-  function toLocalDateTime(value: string) {
-    const date = new Date(value);
-    const offset = date.getTimezoneOffset() * 60000;
-    return new Date(date.getTime() - offset).toISOString().slice(0, 16);
-  }
 
   useEffect(() => {
     setTitle(gift?.title ?? "");
@@ -367,7 +369,7 @@ function GiftEditor({
         <textarea value={description} onChange={event => setDescription(event.target.value)} placeholder="Nachricht für den Spieler" aria-label={`Nachricht Türchen ${day}`} rows={2} />
         <input value={reward} onChange={event => setReward(event.target.value)} placeholder="Belohnung" aria-label={`Belohnung Türchen ${day}`} required />
         <div className="admin-gift-controls">
-          <input type="datetime-local" value={availableAt} onChange={event => setAvailableAt(event.target.value)} aria-label={`Freischaltung Türchen ${day}`} />
+          <input type="datetime-local" value={availableAt} onChange={event => setAvailableAt(event.target.value)} aria-label={`Freischaltung Türchen ${day}`} required />
           <label className="admin-publish"><input type="checkbox" checked={isPublished} onChange={event => setIsPublished(event.target.checked)} /> Veröffentlicht</label>
           <button className="admin-small-button" type="submit">Speichern</button>
         </div>
