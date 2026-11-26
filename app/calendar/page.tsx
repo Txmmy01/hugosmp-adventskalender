@@ -26,15 +26,24 @@ export default function CalendarPage() {
   const [loadingDay, setLoadingDay] = useState<number | null>(null);
 
   async function load() {
-    const sessionResponse = await fetch("/api/player/session");
-    const session = await sessionResponse.json();
-    if (!session.authenticated) {
-      router.replace("/");
-      return;
+    try {
+      const sessionResponse = await fetch("/api/player/session", { cache: "no-store" });
+      const session = await sessionResponse.json();
+      if (!sessionResponse.ok || !session.authenticated) {
+        router.replace("/");
+        return;
+      }
+      setName(session.player.minecraftName);
+      const response = await fetch("/api/player/gifts", { cache: "no-store" });
+      const data = await response.json();
+      if (!response.ok) {
+        setError(data.error ?? "Der Kalender konnte nicht geladen werden.");
+        return;
+      }
+      setGifts(data);
+    } catch {
+      setError("Verbindung fehlgeschlagen. Bitte lade die Seite erneut.");
     }
-    setName(session.player.minecraftName);
-    const response = await fetch("/api/player/gifts");
-    if (response.ok) setGifts(await response.json());
   }
 
   useEffect(() => { load(); }, []);
@@ -42,25 +51,32 @@ export default function CalendarPage() {
   async function openGift(day: number) {
     setLoadingDay(day);
     setError("");
-    const response = await fetch("/api/player/gifts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ day })
-    });
-    const data = await response.json();
-    if (!response.ok) {
-      setError(data.error ?? "Das Geschenk kann noch nicht geöffnet werden.");
+    try {
+      const response = await fetch("/api/player/gifts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ day })
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        setError(data.error ?? "Das Geschenk kann noch nicht geöffnet werden.");
+        return;
+      }
+      setReward(data);
+      await load();
+    } catch {
+      setError("Das Geschenk konnte wegen eines Verbindungsfehlers nicht geöffnet werden.");
+    } finally {
       setLoadingDay(null);
-      return;
     }
-    setReward(data);
-    await load();
-    setLoadingDay(null);
   }
 
   async function logout() {
-    await fetch("/api/player/logout", { method: "POST" });
-    router.replace("/");
+    try {
+      await fetch("/api/player/logout", { method: "POST" });
+    } finally {
+      router.replace("/");
+    }
   }
 
   return (
