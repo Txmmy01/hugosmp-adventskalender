@@ -29,6 +29,7 @@ export default function AdminPage() {
   const [gifts, setGifts] = useState<GiftEntry[]>([]);
   const [minecraftName, setMinecraftName] = useState("");
   const [newPlayerPassword, setNewPlayerPassword] = useState("");
+  const [playerPasswords, setPlayerPasswords] = useState<Record<string, string>>({});
   const [activeTab, setActiveTab] = useState<"players" | "gifts">("players");
   const [saving, setSaving] = useState(false);
 
@@ -114,15 +115,20 @@ export default function AdminPage() {
     setSaving(false);
   }
 
-  async function togglePlayer(player: Player) {
-    await fetch("/api/admin/players", {
+  async function updatePlayer(player: Player, values: { isApproved?: boolean; isActive?: boolean; password?: string }) {
+    const response = await fetch("/api/admin/players", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id: player.id,
-        isApproved: !player.isApproved
-      })
+      body: JSON.stringify({ id: player.id, ...values })
     });
+    const data = await response.json();
+    if (!response.ok) {
+      setError(data.error ?? "Spieler konnte nicht aktualisiert werden.");
+      return;
+    }
+    if (values.password) {
+      setPlayerPasswords(current => ({ ...current, [player.id]: "" }));
+    }
     await loadData();
   }
 
@@ -206,7 +212,12 @@ export default function AdminPage() {
                   <div className="admin-avatar">{player.minecraftName.slice(0, 1).toUpperCase()}</div>
                   <div className="admin-player-name"><strong>{player.minecraftName}</strong><span>{player.isActive ? "Aktiv" : "Gesperrt"}</span></div>
                   <span className={player.isApproved ? "admin-status approved" : "admin-status"}>{player.isApproved ? "Freigegeben" : "Ausstehend"}</span>
-                  <button className="admin-small-button" onClick={() => togglePlayer(player)}>{player.isApproved ? "Sperren" : "Freigeben"}</button>
+                  <button className="admin-small-button" onClick={() => updatePlayer(player, { isApproved: !player.isApproved })}>{player.isApproved ? "Freigabe entziehen" : "Freigeben"}</button>
+                  <button className="admin-small-button" onClick={() => updatePlayer(player, { isActive: !player.isActive })}>{player.isActive ? "Deaktivieren" : "Aktivieren"}</button>
+                  <div className="admin-password-reset">
+                    <input type="password" minLength={10} value={playerPasswords[player.id] ?? ""} onChange={event => setPlayerPasswords(current => ({ ...current, [player.id]: event.target.value }))} placeholder="Neues Spielerpasswort" aria-label={`Neues Passwort für ${player.minecraftName}`} />
+                    <button className="admin-small-button" disabled={(playerPasswords[player.id] ?? "").length < 10} onClick={() => updatePlayer(player, { password: playerPasswords[player.id] })}>Passwort setzen</button>
+                  </div>
                 </div>
               ))}
               {players.length === 0 && <p className="admin-empty">Noch keine Spieler hinzugefügt.</p>}
