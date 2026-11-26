@@ -15,18 +15,23 @@ export default function Home() {
     event.preventDefault();
     setLoading(true);
     setError("");
-    const response = await fetch("/api/player/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ minecraftName, password })
-    });
-    const data = await response.json();
-    if (!response.ok) {
-      setError(data.error ?? "Anmeldung fehlgeschlagen.");
+    try {
+      const response = await fetch("/api/player/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ minecraftName: minecraftName.trim(), password })
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        setError(data.error ?? "Anmeldung fehlgeschlagen.");
+        return;
+      }
+      router.push("/calendar");
+    } catch {
+      setError("Der Server ist gerade nicht erreichbar. Bitte versuche es erneut.");
+    } finally {
       setLoading(false);
-      return;
     }
-    router.push("/calendar");
   }
 
   return (
