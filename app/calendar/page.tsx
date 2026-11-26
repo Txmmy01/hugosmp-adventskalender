@@ -7,8 +7,8 @@ import { useRouter } from "next/navigation";
 type GiftItem = {
   id: string;
   day: number;
-  title: string;
-  description: string;
+  title: string | null;
+  description: string | null;
   availableAt: string;
   isAvailable: boolean;
   isOpened: boolean;
