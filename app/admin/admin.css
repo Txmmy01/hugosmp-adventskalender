@@ -418,3 +418,37 @@
     max-width: none;
   }
 }
+.admin-password-reset {
+  display: flex;
+  flex: 1 1 100%;
+  gap: 8px;
+  margin: 0 0 10px 48px;
+}
+.admin-password-reset input {
+  min-width: 0;
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid rgba(215,230,216,.16);
+  border-radius: 8px;
+  color: #fff9e9;
+  background: rgba(3,17,11,.55);
+  font-size: 11px;
+}
+.admin-password-reset button:disabled {
+  cursor: not-allowed;
+  opacity: .4;
+}
+.login-error {
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border: 1px solid rgba(229,110,96,.35);
+  border-radius: 9px;
+  color: #ffb7aa;
+  background: rgba(125,34,27,.18);
+  font-size: 12px;
+}
+@media (max-width: 720px) {
+  .admin-password-reset {
+    margin-left: 0;
+  }
+}
