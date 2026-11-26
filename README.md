@@ -13,7 +13,7 @@ Weihnachtlicher Adventskalender für die HugoSMP-Community.
 npm install
 cp .env.example .env
 npx prisma generate
-npx prisma migrate dev --name init
+npx prisma migrate dev
 npm run dev
 ```
 
@@ -52,7 +52,11 @@ Der Kalender ist unter http://localhost:3000/calendar erreichbar.
 
 ## Datenbank und Deployment
 
-Die lokale Entwicklung verwendet SQLite. Für ein öffentliches Deployment muss eine dauerhaft gespeicherte Datenbank eingerichtet werden. Die SQLite-Datei darf bei Neustarts oder Deployments nicht verloren gehen. Für Serverless-Hosting ist eine externe PostgreSQL-Datenbank die empfohlene Produktionskonfiguration; dafür muss das Prisma-Datenbankschema entsprechend umgestellt werden.
+Das Repository enthält eine initiale SQLite-Migration. Lokal wird sie mit `npx prisma migrate dev` angewendet. In einer Produktionsumgebung werden bereits eingecheckte Migrationen mit `npx prisma migrate deploy` angewendet.
+
+Die lokale Entwicklung verwendet SQLite. Für öffentliches Serverless-Hosting ist eine dauerhaft gespeicherte PostgreSQL-Datenbank zu verwenden; dafür müssen Prisma-Datasource und `DATABASE_URL` auf PostgreSQL umgestellt und eine passende PostgreSQL-Migration erzeugt werden. Eine lokale SQLite-Datei ist nicht als persistente Produktionsdatenbank für Serverless-Hosting geeignet.
+
+Vor dem Deployment müssen `DATABASE_URL`, `SESSION_SECRET` (mindestens 32 Zeichen) und `ADMIN_PASSWORD_HASH` als geheime Umgebungsvariablen gesetzt sein. `npm run build` und `npx tsc --noEmit` müssen erfolgreich durchlaufen.
 
 ## Projektstatus
 
