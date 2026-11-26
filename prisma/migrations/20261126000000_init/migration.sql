@@ -43,5 +43,3 @@ CREATE UNIQUE INDEX "Player_minecraftName_key" ON "Player"("minecraftName");
 CREATE UNIQUE INDEX "Gift_day_key" ON "Gift"("day");
 CREATE UNIQUE INDEX "DoorOpening_playerId_giftId_key" ON "DoorOpening"("playerId", "giftId");
 CREATE UNIQUE INDEX "AdminSession_tokenHash_key" ON "AdminSession"("tokenHash");
-CREATE INDEX "DoorOpening_playerId_idx" ON "DoorOpening"("playerId");
-CREATE INDEX "DoorOpening_giftId_idx" ON "DoorOpening"("giftId");
