@@ -10,7 +10,16 @@ type Player = {
   isActive: boolean;
 };
 
-type OpeningEntry = {\n  id: string;\n  minecraftName: string;\n  day: number;\n  title: string;\n  reward: string;\n  openedAt: string;\n};\n\ntype GiftEntry = {
+type OpeningEntry = {
+  id: string;
+  minecraftName: string;
+  day: number;
+  title: string;
+  reward: string;
+  openedAt: string;
+};
+
+type GiftEntry = {
   id: string;
   day: number;
   title: string;
@@ -26,7 +35,8 @@ export default function AdminPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [players, setPlayers] = useState<Player[]>([]);
-  const [gifts, setGifts] = useState<GiftEntry[]>([]);\n  const [openings, setOpenings] = useState<OpeningEntry[]>([]);
+  const [gifts, setGifts] = useState<GiftEntry[]>([]);
+  const [openings, setOpenings] = useState<OpeningEntry[]>([]);
   const [minecraftName, setMinecraftName] = useState("");
   const [newPlayerPassword, setNewPlayerPassword] = useState("");
   const [playerPasswords, setPlayerPasswords] = useState<Record<string, string>>({});
@@ -34,9 +44,10 @@ export default function AdminPage() {
   const [saving, setSaving] = useState(false);
 
   async function loadData() {
-    const [playerResponse, giftResponse] = await Promise.all([
+    const [playerResponse, giftResponse, openingResponse] = await Promise.all([
       fetch("/api/admin/players"),
-      fetch("/api/admin/gifts")
+      fetch("/api/admin/gifts"),
+      fetch("/api/admin/openings")
     ]);
 
     if (playerResponse.ok) {
@@ -45,6 +56,10 @@ export default function AdminPage() {
 
     if (giftResponse.ok) {
       setGifts(await giftResponse.json());
+    }
+
+    if (openingResponse.ok) {
+      setOpenings(await openingResponse.json());
     }
   }
 
@@ -184,7 +199,8 @@ export default function AdminPage() {
 
         <nav className="admin-tabs">
           <button className={activeTab === "players" ? "active" : ""} onClick={() => setActiveTab("players")}><Users size={16} /> Spieler</button>
-          <button className={activeTab === "gifts" ? "active" : ""} onClick={() => setActiveTab("gifts")}><Gift size={16} /> Geschenke</button>\n          <button className={activeTab === "received" ? "active" : ""} onClick={() => setActiveTab("received")}><ShieldCheck size={16} /> Erhalten</button>
+          <button className={activeTab === "gifts" ? "active" : ""} onClick={() => setActiveTab("gifts")}><Gift size={16} /> Geschenke</button>
+          <button className={activeTab === "received" ? "active" : ""} onClick={() => setActiveTab("received")}><ShieldCheck size={16} /> Erhalten</button>
         </nav>
 
         {error && <div className="admin-error">{error}</div>}
