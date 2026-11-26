@@ -34,11 +34,26 @@ Das Admin-Panel erreichst du unter http://localhost:3000/admin.
 ## Admin-Funktionen
 
 - Minecraft-Spieler mit eigenem Webseiten-Passwort anlegen
-- Spieler einzeln freigeben oder sperren
+- Spieler einzeln freigeben, deaktivieren und wieder aktivieren
+- Spielerpasswörter einzeln neu setzen
 - Inhalte, Belohnungen und Freischaltzeit für 24 Türchen verwalten
 
-Spieler werden nach dem Anlegen zunächst nicht freigegeben.
+Spieler werden nach dem Anlegen zunächst nicht freigegeben. Passwörter werden mit bcrypt gehasht und sind nicht im Klartext einsehbar.
+
+## Spielerbereich
+
+- Anmeldung mit Minecraft-Namen und dem vom Admin gesetzten Webseiten-Passwort
+- Nur freigegebene und aktive Spieler erhalten eine Sitzung
+- Der Kalender zeigt 24 nummerierte Geschenke
+- Veröffentlichte Geschenke werden erst ab ihrer Freischaltzeit serverseitig geöffnet
+- Geöffnete Türchen und Belohnungen werden pro Spieler gespeichert
+
+Der Kalender ist unter http://localhost:3000/calendar erreichbar.
+
+## Datenbank und Deployment
+
+Die lokale Entwicklung verwendet SQLite. Für ein öffentliches Deployment muss eine dauerhaft gespeicherte Datenbank eingerichtet werden. Die SQLite-Datei darf bei Neustarts oder Deployments nicht verloren gehen. Für Serverless-Hosting ist eine externe PostgreSQL-Datenbank die empfohlene Produktionskonfiguration; dafür muss das Prisma-Datenbankschema entsprechend umgestellt werden.
 
 ## Projektstatus
 
-Die Projektstruktur, die weihnachtliche Login-Oberfläche und das geschützte Admin-Panel sind angelegt. Die Spieleranmeldung und der interaktive Kalender werden als nächste Funktionen ergänzt.
+Login, Spielersitzungen, Admin-Spielerverwaltung, individuelle Passwortänderungen, Geschenkverwaltung und die serverseitige Freischaltprüfung sind implementiert. Vor dem Livegang müssen Build, Datenbankmigration und Deployment-Konfiguration getestet werden.
